@@ -5,7 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GamedayTracker.Views.Pages"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:pages="clr-namespace:GamedayTracker.ViewModels.Pages"
       mc:Ignorable="d" 
+      d:DataContext="{d:DesignInstance pages:AddPlayerPageViewModel,
+                                 IsDesignTimeCreatable=False}"
       ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
       ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -15,7 +18,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="20" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
@@ -37,27 +40,30 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    Text="Add Player" 
-                   Margin="20 0"/>
+                   Margin="0"/>
 
         <ui:TextBox Grid.Column="1"
                     Grid.Row="3"
                     Grid.ColumnSpan="2"
-                    Width="300"/>
+                    Width="300"
+                    Text="{Binding ViewModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <ui:TextBox Grid.Column="1"
                     Grid.Row="5"
                     Grid.ColumnSpan="2"
-                    Width="300"/>
-        <ui:TextBox Grid.Column="1"
-                    Grid.Row="7"
-                    Grid.ColumnSpan="2"
-                    Width="300"/>
+                    Width="300"
+                    Text="{Binding ViewModel.Company, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+      
         <ui:Button Grid.Column="1" 
-                   Grid.Row="9"
+                   Grid.Row="7"
                    Grid.ColumnSpan="2"
                    Content="SUBMIT"
-                   Width="260"
                    Height="38"
+                   Width="80"
                    Background="DarkCyan"
-                   HorizontalAlignment="Center" />
+                   HorizontalAlignment="Right" 
+                   Margin="0 0 10 0"
+                   Command="{Binding ViewModel.SubmitCommand, Mode=OneWay}"
+                   CommandParameter="Test"/>
+        
     </Grid>
 </Page>

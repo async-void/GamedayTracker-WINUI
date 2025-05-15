@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
+using CommunityToolkit.Mvvm.Messaging;
 using GamedayTracker.Services;
+using GamedayTracker.Services.Factories;
 using GamedayTracker.Services.Services;
 using GamedayTracker.ViewModels.Pages;
 using GamedayTracker.ViewModels.Windows;
@@ -50,6 +52,15 @@ namespace GamedayTracker
 
                 // Configuration Services
                 services.AddSingleton<IConfigurationProvider, ConfigurationProviderService>();
+
+                //DbContextFactory
+                services.AddScoped<PlayerDbContextFactory>();
+                services.AddScoped<AppDbContextFactory>();
+
+                //Messenger
+                services.AddSingleton<WeakReferenceMessenger>();
+                services.AddSingleton<IMessenger, WeakReferenceMessenger>(provider =>
+                    provider.GetRequiredService<WeakReferenceMessenger>());
 
                 //Views and ViewModels
                 services.AddSingleton<DashboardPage>();

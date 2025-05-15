@@ -22,7 +22,7 @@ namespace GamedayTracker.Services.Services
             conStr = type.ToString() == "Default" ? json!.ConnectionStrings!.Default : json!.ConnectionStrings!.Gameday;
 
             if (conStr != "")
-                return Result<string, SystemError<ConfigurationProviderService>>.Ok(conStr);
+                return Result<string, SystemError<ConfigurationProviderService>>.Ok(conStr!);
 
             return Result<string, SystemError<ConfigurationProviderService>>.Err(new SystemError<ConfigurationProviderService>
             {
