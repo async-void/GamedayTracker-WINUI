@@ -6,30 +6,36 @@
       xmlns:local="clr-namespace:GamedayTracker.Views.Pages"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:pages="clr-namespace:GamedayTracker.ViewModels.Pages"
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:converters="clr-namespace:GamedayTracker.Converters"
       mc:Ignorable="d" 
       d:DataContext="{d:DesignInstance pages:AddPlayerPageViewModel,
                                  IsDesignTimeCreatable=False}"
       ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
       ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-      Height="450" Width="400"
+      Height="450" Width="1000"
       Title="AddPlayerPage"
       HorizontalAlignment="Left">
+    <Page.Resources>
+        <converters:BoolToColorConverter x:Key="colorConverter" />
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="10" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="10" />
             <RowDefinition Height="40" />
             <RowDefinition Height="4" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="4" />
+            <RowDefinition Height="6" />
             <RowDefinition Height="40" />
             <RowDefinition Height="4" />
             <RowDefinition Height="40" />
@@ -39,31 +45,73 @@
                    Grid.Row="1"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Text="Add Player" 
+                   Text="Add/Edit Player" 
                    Margin="0"/>
 
         <ui:TextBox Grid.Column="1"
                     Grid.Row="3"
-                    Grid.ColumnSpan="2"
-                    Width="300"
-                    Text="{Binding ViewModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    Width="350"
+                    Text="{Binding ViewModel.Name, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <ui:TextBox Grid.Column="1"
                     Grid.Row="5"
-                    Grid.ColumnSpan="2"
-                    Width="300"
-                    Text="{Binding ViewModel.Company, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    Width="350"
+                    Text="{Binding ViewModel.Company, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
       
         <ui:Button Grid.Column="1" 
                    Grid.Row="7"
-                   Grid.ColumnSpan="2"
                    Content="SUBMIT"
                    Height="38"
                    Width="80"
                    Background="DarkCyan"
                    HorizontalAlignment="Right" 
                    Margin="0 0 10 0"
-                   Command="{Binding ViewModel.SubmitCommand, Mode=OneWay}"
-                   CommandParameter="Test"/>
+                   Command="{Binding ViewModel.SubmitCommand, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"/>
+        <md:Snackbar Grid.Column="1"
+                     Grid.Row="9"
+                     HorizontalContentAlignment="Center"
+                     HorizontalAlignment="Center"
+                     Background="Transparent"
+                     FontWeight="Bold"
+                     FontSize="18"
+                     MessageQueue="{Binding ViewModel.MsgQueue, RelativeSource={RelativeSource AncestorType=Page}}"
+                     Foreground="{Binding ViewModel.IsValid, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource colorConverter}}">
+        </md:Snackbar>
+        <Grid Grid.Column="2"
+              Grid.Row="3"
+              Grid.RowSpan="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+            </Grid.ColumnDefinitions>
+           
+                <!-- Add your content here -->
+            <ListBox x:Name="lstPlayers"
+                     ItemsSource="{Binding ViewModel.Players, RelativeSource={RelativeSource AncestorType=Page}}"
+                     Grid.Column="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" 
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                       Margin="10 0" Padding="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Company}" 
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                       Padding="0" VerticalAlignment="Center"/>
+                            <ui:Button Content="Edit" Margin="10 0 2 0"
+                                       Command="{Binding ViewModel.EditPlayerCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                       CommandParameter="{Binding }"/>
+                            <ui:Button Content="Delete" Margin="2 0 0 0"/>
+                            <ui:Button Content="Picks" Margin="2 0 0 0"
+                                       Command="{Binding ViewModel.PlayerPicksCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                       CommandParameter="{Binding }"
+                                       />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+        </Grid>
         
     </Grid>
 </Page>

@@ -9,6 +9,7 @@ using GamedayTracker.ViewModels.Pages;
 using GamedayTracker.ViewModels.Windows;
 using GamedayTracker.Views.Pages;
 using GamedayTracker.Views.Windows;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,9 +29,9 @@ namespace GamedayTracker
         // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
         // https://docs.microsoft.com/dotnet/core/extensions/configuration
         // https://docs.microsoft.com/dotnet/core/extensions/logging
-        private static readonly IHost _host = Host
+        private static readonly IHost? _host = Host
             .CreateDefaultBuilder()
-            .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)); })
+            .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)!); })
             .ConfigureServices(static (context, services) =>
             {
                 services.AddNavigationViewPageProvider();
@@ -73,6 +74,16 @@ namespace GamedayTracker
                 services.AddSingleton<MatchupPageViewModel>();
                 services.AddSingleton<AddPlayerPage>();
                 services.AddSingleton<AddPlayerPageViewModel>();
+
+                //MaterialDesign Message Queue
+                services.AddSingleton(sp => Application.Current.Dispatcher);
+                services.AddTransient<ISnackbarMessageQueue>(provider =>
+                {
+                    var dispatcher = provider.GetRequiredService<Dispatcher>();
+                    return new SnackbarMessageQueue(TimeSpan.FromSeconds(3.0), dispatcher);
+
+                });
+
             }).Build();
 
         /// <summary>
@@ -80,7 +91,7 @@ namespace GamedayTracker
         /// </summary>
         public static IServiceProvider Services
         {
-            get { return _host.Services; }
+            get { return _host!.Services; }
         }
 
         /// <summary>
@@ -88,7 +99,8 @@ namespace GamedayTracker
         /// </summary>
         private async void OnStartup(object sender, StartupEventArgs e)
         {
-            await _host.StartAsync();
+            await _host!.StartAsync();
+            
         }
 
         /// <summary>
@@ -96,7 +108,7 @@ namespace GamedayTracker
         /// </summary>
         private async void OnExit(object sender, ExitEventArgs e)
         {
-            await _host.StopAsync();
+            await _host!.StopAsync();
 
             _host.Dispose();
         }

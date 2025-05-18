@@ -15,6 +15,7 @@ namespace GamedayTracker.Services.Data
         public DbSet<TeamPlayer> TeamPlayers { get; set; }
         public DbSet<Opponent> Opponents { get; set; }
         public DbSet<Matchup> Matchups { get; set; }
+        public DbSet<TeamStats> TeamStats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
